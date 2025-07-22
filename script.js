@@ -146,6 +146,7 @@ Available Commands:
 • retrieve file [filename] - Access secure files
 • scan network - Network diagnostics
 • override protocol - Emergency override
+• records - Access personnel records database
 • clear - Clear terminal
 • status - System status report
 </div>
@@ -223,6 +224,8 @@ function parseCommand(cmd) {
       performNetworkScan();
     } else if (cmd.startsWith('OVERRIDE PROTOCOL')) {
       handleEmergencyOverride(cmd);
+    } else if (cmd === 'RECORDS') {
+      redirectToRecords();
     } else if (cmd === 'MATRIX MODE') {
       activateMatrixMode();
     } else if (cmd === 'SHUTDOWN') {
@@ -246,6 +249,7 @@ function showHelp() {
 • <span style="color: #ffaa00;">retrieve file [filename]</span> - Access classified files
 • <span style="color: #ffaa00;">scan network</span> - Perform network diagnostics
 • <span style="color: #ffaa00;">override protocol [code]</span> - Emergency system override
+• <span style="color: #ffaa00;">records</span> - Access personnel records database
 • <span style="color: #ffaa00;">status</span> - Display system status report
 • <span style="color: #ffaa00;">matrix mode</span> - Activate enhanced interface
 • <span style="color: #ffaa00;">clear</span> - Clear terminal output
@@ -253,6 +257,57 @@ function showHelp() {
 </div>
   `;
   addToOutput(helpText);
+}
+
+function redirectToRecords() {
+  addToOutput(`<span style="color: #00ffcc;">Accessing personnel records database...</span>`);
+  addToOutput(`<span style="color: #ffaa00;">🔐 Authenticating access credentials...</span>`);
+  addToOutput(`<span style="color: #00ff00;">✓ Authentication successful</span>`);
+  addToOutput(`<span style="color: #00ffcc;">📁 Loading records interface...</span>`);
+  
+  // Show loading animation
+  const loadingDiv = document.createElement('div');
+  loadingDiv.innerHTML = `
+    <div style="margin: 1rem 0; color: #00ffff;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="loading-spinner" style="
+          width: 20px; 
+          height: 20px; 
+          border: 2px solid #333; 
+          border-top: 2px solid #00ffcc; 
+          border-radius: 50%; 
+          animation: spin 1s linear infinite;
+        "></div>
+        <span>Redirecting to records.html...</span>
+      </div>
+    </div>
+  `;
+  
+  // Add CSS animation for spinner
+  if (!document.querySelector('#spinner-style')) {
+    const style = document.createElement('style');
+    style.id = 'spinner-style';
+    style.textContent = `
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  commandOutput.appendChild(loadingDiv);
+  scrollToBottom();
+  
+  setTimeout(() => {
+    addToOutput(`<span style="color: #00ff00;">🚀 Redirecting to personnel records...</span>`);
+    showNotification('Redirecting to Records Database', 'success');
+    
+    // Redirect after a short delay
+    setTimeout(() => {
+      window.location.href = 'records.html';
+    }, 1500);
+  }, 2000);
 }
 
 function handleAccessLevel(cmd) {
