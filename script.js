@@ -78,45 +78,55 @@ document.addEventListener('DOMContentLoaded', function() {
 // Boot Sequence
 function showBootSequence() {
   const overlay = document.getElementById('loadingOverlay');
-  overlay.style.display = 'flex';
-  
-  const bootMessages = [
-    "INITIALIZING QUANTUM MATRIX...",
-    "LOADING NEURAL PATHWAYS...",
-    "ESTABLISHING SECURE CONNECTION...",
-    "AUTHENTICATING BIOMETRIC DATA...",
-    "SYSTEM READY"
-  ];
-  
-  let i = 0;
-  const bootInterval = setInterval(() => {
-    document.querySelector('.loading-text').textContent = bootMessages[i];
-    i++;
+  if (overlay) {
+    overlay.style.display = 'flex';
     
-    if (i >= bootMessages.length) {
-      clearInterval(bootInterval);
-      setTimeout(() => {
-        overlay.style.display = 'none';
-        typeWelcomeMessage();
-      }, 1000);
-    }
-  }, 800);
+    const bootMessages = [
+      "INITIALIZING QUANTUM MATRIX...",
+      "LOADING NEURAL PATHWAYS...",
+      "ESTABLISHING SECURE CONNECTION...",
+      "AUTHENTICATING BIOMETRIC DATA...",
+      "SYSTEM READY"
+    ];
+    
+    let i = 0;
+    const bootInterval = setInterval(() => {
+      const loadingText = document.querySelector('.loading-text');
+      if (loadingText) {
+        loadingText.textContent = bootMessages[i];
+      }
+      i++;
+      
+      if (i >= bootMessages.length) {
+        clearInterval(bootInterval);
+        setTimeout(() => {
+          overlay.style.display = 'none';
+          typeWelcomeMessage();
+        }, 1000);
+      }
+    }, 800);
+  } else {
+    // If no loading overlay, just show welcome message
+    typeWelcomeMessage();
+  }
 }
 
 // Initialize Terminal
 function initializeTerminal() {
-  commandInput.addEventListener('keydown', handleCommand);
-  commandInput.addEventListener('keyup', handleHistoryNavigation);
-  
-  // Auto-focus terminal input
-  commandInput.focus();
-  
-  // Refocus on click
-  document.addEventListener('click', () => {
-    if (!window.getSelection().toString()) {
-      commandInput.focus();
-    }
-  });
+  if (commandInput) {
+    commandInput.addEventListener('keydown', handleCommand);
+    commandInput.addEventListener('keyup', handleHistoryNavigation);
+    
+    // Auto-focus terminal input
+    commandInput.focus();
+    
+    // Refocus on click
+    document.addEventListener('click', () => {
+      if (!window.getSelection().toString()) {
+        commandInput.focus();
+      }
+    });
+  }
 }
 
 // Welcome Message
@@ -395,8 +405,11 @@ function simulateFileTransfer(file) {
     progress += Math.random() * 15 + 5;
     if (progress > 100) progress = 100;
     
-    document.getElementById('transferProgress').style.width = progress + '%';
-    document.getElementById('transferText').textContent = `Downloading... ${Math.floor(progress)}%`;
+    const progressEl = document.getElementById('transferProgress');
+    const textEl = document.getElementById('transferText');
+    
+    if (progressEl) progressEl.style.width = progress + '%';
+    if (textEl) textEl.textContent = `Downloading... ${Math.floor(progress)}%`;
     
     if (progress >= 100) {
       clearInterval(interval);
@@ -453,8 +466,10 @@ function handleEmergencyOverride(cmd) {
   
   if (code === 'ALPHA-7-7') {
     isSystemBreached = true;
-    statusDisplay.innerText = "BREACH DETECTED";
-    statusDisplay.classList.add("alert-status");
+    if (statusDisplay) {
+      statusDisplay.innerText = "BREACH DETECTED";
+      statusDisplay.classList.add("alert-status");
+    }
     
     addToOutput(`<span style="color: #ff4444; font-weight: bold;">⚠️ EMERGENCY OVERRIDE ACTIVATED ⚠️</span>`);
     addToOutput(`<span style="color: #ff4444;">🔒 ALL BLAST DOORS SEALED</span>`);
@@ -528,30 +543,36 @@ function initiateShutdown() {
   
   setTimeout(() => {
     addToOutput(`<span style="color: #ff4444;">CONNECTION TERMINATED</span>`);
-    commandInput.disabled = true;
+    if (commandInput) commandInput.disabled = true;
     showNotification('System Shutdown', 'error');
   }, 2000);
 }
 
 // UI Helper Functions
 function addToOutput(content) {
-  const div = document.createElement('div');
-  div.innerHTML = content;
-  div.style.marginBottom = '0.3rem';
-  commandOutput.appendChild(div);
+  if (commandOutput) {
+    const div = document.createElement('div');
+    div.innerHTML = content;
+    div.style.marginBottom = '0.3rem';
+    commandOutput.appendChild(div);
+  }
 }
 
 function scrollToBottom() {
-  commandOutput.scrollTop = commandOutput.scrollHeight;
+  if (commandOutput) {
+    commandOutput.scrollTop = commandOutput.scrollHeight;
+  }
 }
 
 function showTypingIndicator() {
-  const indicator = document.createElement('div');
-  indicator.id = 'typingIndicator';
-  indicator.innerHTML = '<span style="color: #ffaa00;">Processing command...</span>';
-  indicator.style.opacity = '0.7';
-  commandOutput.appendChild(indicator);
-  scrollToBottom();
+  if (commandOutput) {
+    const indicator = document.createElement('div');
+    indicator.id = 'typingIndicator';
+    indicator.innerHTML = '<span style="color: #ffaa00;">Processing command...</span>';
+    indicator.style.opacity = '0.7';
+    commandOutput.appendChild(indicator);
+    scrollToBottom();
+  }
 }
 
 function hideTypingIndicator() {
@@ -561,25 +582,27 @@ function hideTypingIndicator() {
 
 // Generate Access Levels
 function generateAccessLevels() {
-  accessLevels.forEach(level => {
-    const div = document.createElement('div');
-    div.className = 'access-level';
-    div.innerHTML = `
-      <div class='level-title'>Level ${level.level}: ${level.title}</div>
-      <div class='level-access' style="color: ${level.color};">
-        <strong>Clearance:</strong> ${level.clearance}<br>
-        <strong>Access:</strong> ${level.access}
-      </div>
-    `;
-    
-    div.addEventListener('click', () => {
-      highlightAccessLevel(level.level);
-      addToOutput(`<span style="color: #00ffcc;">Selected:</span> Access Level ${level.level}`);
-      scrollToBottom();
+  if (accessList) {
+    accessLevels.forEach(level => {
+      const div = document.createElement('div');
+      div.className = 'access-level';
+      div.innerHTML = `
+        <div class='level-title'>Level ${level.level}: ${level.title}</div>
+        <div class='level-access' style="color: ${level.color};">
+          <strong>Clearance:</strong> ${level.clearance}<br>
+          <strong>Access:</strong> ${level.access}
+        </div>
+      `;
+      
+      div.addEventListener('click', () => {
+        highlightAccessLevel(level.level);
+        addToOutput(`<span style="color: #00ffcc;">Selected:</span> Access Level ${level.level}`);
+        scrollToBottom();
+      });
+      
+      accessList.appendChild(div);
     });
-    
-    accessList.appendChild(div);
-  });
+  }
 }
 
 function highlightAccessLevel(level) {
@@ -597,16 +620,18 @@ function highlightAccessLevel(level) {
 function startBackgroundAnimations() {
   // Quantum core fluctuations
   setInterval(() => {
-    const fluctuation = (Math.random() * 2 - 1) * 0.3;
-    const newValue = 98.7 + fluctuation;
-    quantumCore.textContent = newValue.toFixed(1) + '%';
+    if (quantumCore) {
+      const fluctuation = (Math.random() * 2 - 1) * 0.3;
+      const newValue = 98.7 + fluctuation;
+      quantumCore.textContent = newValue.toFixed(1) + '%';
+    }
   }, 2000);
 }
 
 // System Metrics
 function startSystemMetrics() {
   setInterval(() => {
-    if (!isSystemBreached) {
+    if (!isSystemBreached && statusDisplay) {
       const metrics = ['STABLE', 'OPTIMAL', 'NOMINAL', 'SECURE'];
       statusDisplay.textContent = metrics[Math.floor(Math.random() * metrics.length)];
     }
@@ -616,13 +641,14 @@ function startSystemMetrics() {
 // Neural Network Canvas
 function initializeNeuralNetwork() {
   const canvas = document.getElementById('neuralCanvas');
+  if (!canvas) return;
+  
   const ctx = canvas.getContext('2d');
   
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   
   const nodes = [];
-  const connections = [];
   
   // Create nodes
   for (let i = 0; i < 50; i++) {
@@ -687,16 +713,18 @@ function initializeNeuralNetwork() {
 // Notification System
 function showNotification(message, type = 'info') {
   const container = document.getElementById('notificationContainer');
-  const notification = document.createElement('div');
-  notification.className = `notification ${type}`;
-  notification.textContent = message;
-  
-  container.appendChild(notification);
-  
-  setTimeout(() => {
-    notification.style.animation = 'slideIn 0.5s ease reverse';
-    setTimeout(() => notification.remove(), 500);
-  }, 3000);
+  if (container) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    
+    container.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.style.animation = 'slideIn 0.5s ease reverse';
+      setTimeout(() => notification.remove(), 500);
+    }, 3000);
+  }
 }
 
 // Alarm Mode
@@ -724,28 +752,280 @@ function toggleTheme() {
   showNotification(`Theme changed to ${currentTheme.toUpperCase()}`, 'info');
 }
 
-// Language Toggle
+// Language Toggle (completing the unfinished function)
 function toggleLang() {
   currentLanguage = currentLanguage === 'EN' ? 'VN' : 'EN';
   showNotification(`Language switched to ${currentLanguage}`, 'info');
   
-  if (currentLanguage === 'VN') {
-    document.querySelector('.subtitle').textContent = 'CẬP NHẬT TRUY CẬP LƯỢNG TỬ';
-  } else {
-    document.querySelector('.subtitle').textContent = 'QUANTUM ACCESS TERMINAL';
+  const subtitle = document.querySelector('.subtitle');
+  if (subtitle) {
+    if (currentLanguage === 'VN') {
+      subtitle.textContent = 'TRẠM TRUY CẬP LƯỢNG TỬ - BỘ PHẬN NGHIÊN CỨU PANDORA';
+    } else {
+      subtitle.textContent = 'QUANTUM ACCESS TERMINAL - Pandora Research Division';
+    }
+  }
+  
+  // Update command prompts and messages based on language
+  updateLanguageElements();
+}
+
+// Update UI elements based on current language
+function updateLanguageElements() {
+  const langElements = {
+    'EN': {
+      prompt: '[ASGARD@QUANTUM]$',
+      status: 'SYSTEM STATUS',
+      access: 'ACCESS LEVELS',
+      welcome: 'QUANTUM ACCESS TERMINAL v4.7.2'
+    },
+    'VN': {
+      prompt: '[ASGARD@LƯỢNG-TỬ]$',
+      status: 'TRẠNG THÁI HỆ THỐNG',
+      access: 'CẤP ĐỘ TRUY CẬP',
+      welcome: 'TRẠM TRUY CẬP LƯỢNG TỬ v4.7.2'
+    }
+  };
+  
+  // Update any existing language-dependent elements
+  const statusTitle = document.querySelector('.status-title');
+  if (statusTitle) {
+    statusTitle.textContent = langElements[currentLanguage].status;
+  }
+  
+  const accessTitle = document.querySelector('.access-title');
+  if (accessTitle) {
+    accessTitle.textContent = langElements[currentLanguage].access;
   }
 }
 
-// File interactions
-document.addEventListener('DOMContentLoaded', function() {
-  const fileItems = document.querySelectorAll('.file-item');
-  fileItems.forEach(item => {
-    item.addEventListener('click', () => {
-      const fileName = item.dataset.file;
-      addToOutput(`<span style="color: #00ffcc;">File selected:</span> ${fileName}`);
-      addToOutput(`<span style="color: #ffaa00;">Use 'retrieve file ${fileName}' to download</span>`);
+// Additional utility functions that might be needed
+
+// Handle window resize for responsive design
+function handleResize() {
+  const canvas = document.getElementById('neuralCanvas');
+  if (canvas) {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+}
+
+// Enhanced error handling for commands
+function logSecurityEvent(event, level = 'INFO') {
+  const timestamp = new Date().toISOString();
+  const logEntry = `[${timestamp}] ${level}: ${event}`;
+  
+  // Store in memory (since we can't use localStorage)
+  if (!window.securityLog) {
+    window.securityLog = [];
+  }
+  window.securityLog.push(logEntry);
+  
+  // Keep only last 100 entries
+  if (window.securityLog.length > 100) {
+    window.securityLog.shift();
+  }
+}
+
+// Enhanced notification system with sound effects (visual representation)
+function playSystemSound(type) {
+  // Visual sound effect since we can't play actual audio
+  const soundIndicator = document.createElement('div');
+  soundIndicator.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 5px 10px;
+    background: rgba(0, 255, 204, 0.2);
+    border: 1px solid #00ffcc;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 1000;
+    animation: fadeInOut 1s ease-in-out;
+  `;
+  
+  const sounds = {
+    'success': '♪ BEEP',
+    'error': '♪ BUZZ',
+    'alert': '♪ ALARM',
+    'info': '♪ CHIRP'
+  };
+  
+  soundIndicator.textContent = sounds[type] || sounds.info;
+  document.body.appendChild(soundIndicator);
+  
+  setTimeout(() => soundIndicator.remove(), 1000);
+}
+
+// Enhanced command history with search
+function searchCommandHistory(searchTerm) {
+  if (!searchTerm) return commandHistory;
+  
+  return commandHistory.filter(cmd => 
+    cmd.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+}
+
+// System diagnostics command
+function runDiagnostics() {
+  addToOutput(`<span style="color: #00ffcc;">Running system diagnostics...</span>`);
+  
+  const diagnostics = [
+    'Checking quantum coherence... ✓',
+    'Validating neural pathways... ✓',
+    'Testing security protocols... ✓',
+    'Analyzing memory integrity... ✓',
+    'Scanning for anomalies... ⚠️ 1 anomaly detected',
+    'Verifying backup systems... ✓'
+  ];
+  
+  let i = 0;
+  const diagInterval = setInterval(() => {
+    if (i < diagnostics.length) {
+      const color = diagnostics[i].includes('⚠️') ? '#ffaa00' : '#00ff00';
+      addToOutput(`<span style="color: ${color};">${diagnostics[i]}</span>`);
+      i++;
       scrollToBottom();
-      commandInput.focus();
-    });
+    } else {
+      clearInterval(diagInterval);
+      addToOutput(`<div style="margin-top: 1rem; color: #00ffcc;">
+        Diagnostics Complete<br>
+        Overall Status: OPERATIONAL<br>
+        Anomalies: 1 (Non-critical)
+      </div>`);
+    }
+  }, 800);
+}
+
+// Add CSS animations that might be referenced
+function addSystemStyles() {
+  if (!document.querySelector('#system-styles')) {
+    const style = document.createElement('style');
+    style.id = 'system-styles';
+    style.textContent = `
+      @keyframes fadeInOut {
+        0%, 100% { opacity: 0; transform: translateY(-10px); }
+        50% { opacity: 1; transform: translateY(0); }
+      }
+      
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+      
+      .notification {
+        padding: 10px 15px;
+        margin: 5px 0;
+        border-radius: 5px;
+        animation: slideIn 0.5s ease;
+      }
+      
+      .notification.success {
+        background: rgba(0, 255, 0, 0.2);
+        border-left: 3px solid #00ff00;
+      }
+      
+      .notification.error {
+        background: rgba(255, 0, 0, 0.2);
+        border-left: 3px solid #ff0000;
+      }
+      
+      .notification.info {
+        background: rgba(0, 255, 204, 0.2);
+        border-left: 3px solid #00ffcc;
+      }
+      
+      .alert-status {
+        animation: pulse 1s infinite;
+        color: #ff4444 !important;
+      }
+      
+      .access-level {
+        padding: 10px;
+        margin: 5px 0;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid #333;
+        border-left: 3px solid #00ffcc;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .access-level:hover {
+        background: rgba(0, 255, 204, 0.1);
+        border-left-color: #00ffff;
+      }
+      
+      .level-title {
+        font-weight: bold;
+        color: #00ffcc;
+        margin-bottom: 5px;
+      }
+      
+      .level-access {
+        font-size: 12px;
+        line-height: 1.4;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
+
+// Initialize additional features on load
+function initializeEnhancedFeatures() {
+  addSystemStyles();
+  
+  // Add keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey) {
+      switch(e.key) {
+        case 'l':
+          e.preventDefault();
+          clearTerminal();
+          break;
+        case 'r':
+          e.preventDefault();
+          parseCommand('STATUS');
+          break;
+      }
+    }
   });
+  
+  // Initialize enhanced command suggestions
+  if (commandInput) {
+    const commands = ['help', 'status', 'clear', 'access_level set', 'retrieve file', 'scan network', 'override protocol', 'records', 'matrix mode', 'shutdown'];
+    
+    // Simple command completion on Tab
+    commandInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const input = e.target.value.toLowerCase();
+        const match = commands.find(cmd => cmd.startsWith(input));
+        if (match) {
+          e.target.value = match;
+        }
+      }
+    });
+  }
+}
+
+// Call enhanced initialization
+document.addEventListener('DOMContentLoaded', function() {
+  // Original initialization
+  initializeTerminal();
+  generateAccessLevels();
+  startBackgroundAnimations();
+  startSystemMetrics();
+  initializeNeuralNetwork();
+  showBootSequence();
+  
+  // Enhanced features
+  initializeEnhancedFeatures();
 });
+
+// Add resize listener
+window.addEventListener('resize', handleResize);
