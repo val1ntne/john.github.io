@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ninth Site of Asgard Terminal</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+
+    <!-- Neural Network Background -->
+    <div class="neural-bg">
+      <canvas id="neuralCanvas"></canvas>
+    </div>
+
+    <div class="container-fluid">
+      <!-- Header with holographic effect -->
+      <div class="header-section">
+        <div class="hologram-container">
+          <h1 class="main-title">
+            <span class="title-line">NINTH SITE OF ASGARD</span>
+            <span class="subtitle">QUANTUM ACCESS TERMINAL</span>
+          </h1>
+          <div class="orbit-rings">
+            <div class="ring ring-1"></div>
+            <div class="ring ring-2"></div>
+            <div class="ring ring-3"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Bar with Advanced Metrics -->
+      <div class="status-dashboard">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <div class="status-card">
+              <i class="fas fa-shield-alt status-icon"></i>
+              <div class="status-info">
+                <span class="status-label">SYSTEM STATUS</span>
+                <span id="statusDisplay" class="status-value">STABLE</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="status-card">
+              <i class="fas fa-cpu status-icon"></i>
+              <div class="status-info">
+                <span class="status-label">QUANTUM CORE</span>
+                <span id="quantumCore" class="status-value">98.7%</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="status-card">
+              <i class="fas fa-globe status-icon"></i>
+              <div class="status-info">
+                <span class="status-label">LANGUAGE</span>
+                <button class="cyber-btn" onclick="toggleLang()">EN/VN</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="status-card">
+              <i class="fas fa-palette status-icon"></i>
+              <div class="status-info">
+                <span class="status-label">THEME</span>
+                <button class="cyber-btn" onclick="toggleTheme()">
+                  MATRIX
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <!-- Terminal Section -->
+        <div class="col-lg-8">
+          <div class="cyber-panel terminal-panel">
+            <div class="panel-header">
+              <i class="fas fa-terminal"></i>
+              <span>QUANTUM COMMAND INTERFACE</span>
+              <div class="panel-controls">
+                <div class="control-dot minimize"></div>
+                <div class="control-dot maximize"></div>
+                <div class="control-dot close"></div>
+              </div>
+            </div>
+
+            <div class="terminal-body">
+              <div id="commandOutput" class="command-output"></div>
+              <div class="input-row">
+                <span class="prompt">[ASGARD@QUANTUM]$</span>
+                <input
+                  type="text"
+                  id="commandInput"
+                  class="command-input"
+                  placeholder="ENTER COMMAND"
+                  onkeydown="handleCommand(event)"
+                  autocomplete="off"
+                />
+                <div class="cursor-blink"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Access Levels Section -->
+        <div class="col-lg-4">
+          <div class="cyber-panel access-panel">
+            <div class="panel-header">
+              <i class="fas fa-lock"></i>
+              <span>ACCESS MATRIX</span>
+            </div>
+            <div class="access-grid" id="accessList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- File System Section -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="cyber-panel files-panel">
+            <div class="panel-header">
+              <i class="fas fa-database"></i>
+              <span>SECURE FILE DIRECTORY</span>
+              <div class="file-stats">
+                <span class="stat-item">
+                  <i class="fas fa-file"></i> 847 FILES
+                </span>
+                <span class="stat-item">
+                  <i class="fas fa-hdd"></i> 2.7 TB
+                </span>
+              </div>
+            </div>
+
+            <div class="files-grid">
+              <div class="file-item classified" data-file="Z-2_CORE_REPORT">
+                <div class="file-icon">
+                  <i class="fas fa-file-pdf"></i>
+                </div>
+                <div class="file-info">
+                  <span class="file-name">[Z-2_CORE_REPORT].pdf</span>
+                  <span class="file-details"
+                    >CLASSIFIED • 847 MB • AES-256</span
+                  >
+                </div>
+                <div class="file-status">
+                  <div class="security-level level-9"></div>
+                </div>
+              </div>
+
+              <div
+                class="file-item restricted"
+                data-file="HAVEN_ENVIRONMENTAL_SURVEY"
+              >
+                <div class="file-icon">
+                  <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="file-info">
+                  <span class="file-name"
+                    >[HAVEN_ENVIRONMENTAL_SURVEY].txt</span
+                  >
+                  <span class="file-details"
+                    >RESTRICTED • 12 MB • QUANTUM-ENC</span
+                  >
+                </div>
+                <div class="file-status">
+                  <div class="security-level level-6"></div>
+                </div>
+              </div>
+
+              <div
+                class="file-item top-secret"
+                data-file="FOUNDERS_LOG_MR.HARRELL"
+              >
+                <div class="file-icon">
+                  <i class="fas fa-video"></i>
+                </div>
+                <div class="file-info">
+                  <span class="file-name">[FOUNDERS_LOG_MR.HARRELL].mp4</span>
+                  <span class="file-details"
+                    >TOP SECRET • 3.2 GB • NEURAL-LOCK</span
+                  >
+                </div>
+                <div class="file-status">
+                  <div class="security-level level-1"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification System -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="quantum-loader">
+        <div class="quantum-ring"></div>
+        <div class="quantum-core"></div>
+        <span class="loading-text">ACCESSING QUANTUM MATRIX...</span>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
